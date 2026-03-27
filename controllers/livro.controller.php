@@ -1,6 +1,6 @@
 <?php
 
-$livro = $DB->query(
+$livro = $database->query(
 
     query: "select * from livros where id = :id",
 
