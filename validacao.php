@@ -2,7 +2,7 @@
 
 class Validacao {
 
-    public $validacoes;
+    public $validacoes = [];
 
     public static function validar($regras, $dados)
     {
@@ -111,10 +111,18 @@ class Validacao {
 
     }
 
-    public function naoPassou()
+    public function naoPassou($nomeCustomizado = null)
     {
 
-        $_SESSION['validacoes'] = $validacao->validacoes;
+        $chave = 'validacoes';
+
+        if ($nomeCustomizado) {
+
+            $chave .= '_' . $nomeCustomizado;
+
+        }
+
+        flash()->push($chave, $this->validacoes);
 
         return sizeof($this->validacoes) > 0;
 

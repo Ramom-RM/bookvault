@@ -1,18 +1,31 @@
 <?php
 
-$mensagem = $_REQUEST['mensagem'] ?? '';
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $email = $_POST['email'];
 
     $senha = $_POST['senha'];
 
+    $validacao = Validacao::validar([
+
+        'email' => ['required', 'email'],
+        'senha' => ['required']
+
+    ], $_POST);
+
+    if ($validacao->naoPassou('login')) {
+
+        header("Location: /login");
+
+        exit();
+
+    }
+
     $usuario = $database->query(
 
-        query: " select * from usuarios where email = :email and senha = :senha", 
+        query: " select * from usuarios where email = :email and senha = :senha",
 
-        class: Usuario ::class,
+        class: Usuario::class,
 
         params: compact('email', 'senha')
 
@@ -22,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $_SESSION['auth'] = $usuario;
 
-        $_SESSION['mensagem'] = "Seja bem-vindo" . $usuario->nome . "!";
+        flash()->push('mensagem', "Seja bem-vindo" . $usuario->nome . "!");
 
         header("Location: /");
 
@@ -32,4 +45,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 }
 
-view('login', compact('mensagem'));
+view('login');
