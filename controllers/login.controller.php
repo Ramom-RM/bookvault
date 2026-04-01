@@ -12,6 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         query: " select * from usuarios where email = :email and senha = :senha", 
 
+        class: Usuario ::class,
+
         params: compact('email', 'senha')
 
     )->fetch();
@@ -20,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $_SESSION['auth'] = $usuario;
 
-        $_SESSION['mensagem'] = "Seja bem-vindo" . $usuario['nome'] . "!";
+        $_SESSION['mensagem'] = "Seja bem-vindo" . $usuario->nome . "!";
 
         header("Location: /");
 
