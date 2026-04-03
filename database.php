@@ -1,6 +1,6 @@
 <?php
 
-class DB {
+class Database {
 
     private $db;
 
@@ -46,4 +46,4 @@ class DB {
 
 }
 
-$database = new DB($config['database']);
+$database = new Database($config['database']);

@@ -80,6 +80,32 @@ class Validacao {
 
     }
 
+    private function unique($tabela, $campo, $valor)
+    {
+
+        if (strlen($valor) == 0) {
+
+            return ;
+
+        }
+
+        $db = new Database(config('database'));
+
+        $resultado = $db->query(
+
+            query: "select * from $tabela where $campo = :valor",
+            params: ['valor' => $valor]
+
+        )->fetch();
+
+        if ($resultado) {
+
+            $this->validacoes[] = "O $campo já está sendo usado.";
+
+        }
+
+    }
+
     private function min($min, $campo, $valor) {
 
         if (strlen($valor) <= $min) {
