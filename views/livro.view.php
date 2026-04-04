@@ -1,3 +1,17 @@
+<?php
+
+    $sumNotas = array_reduce($avaliacoes, function($carry, $a) {
+
+        return ($carry ?? 0) + $a->nota;
+
+    }) ?? 0;
+
+    $sumNotas = round($sumNotas / 5);
+
+    $notaFinal = str_repeat('⭐', $sumNotas);
+
+?>
+
 <?= $livro->titulo; ?>
 
 <div class="p-2 rounded border-stone-800 border-2 bg-stone-900">
@@ -10,7 +24,7 @@
 
             <a href="/livro?id=<?= $livro->id ?>" class="font-semibold hover:underline"><?= $livro->titulo ?></a>
             <div class="text-xs italic"><?= $livro->autor ?></div>
-            <div class="text-xs italic">⭐⭐⭐⭐⭐(3 Avaliações)</div>
+            <div class="text-xs italic"><?= $notaFinal ?>(<?=count($avaliacoes)?> Avaliações)</div>
 
         </div>
 
@@ -24,12 +38,32 @@
 
 <div class="grid grid-cols-4 gap-4">
 
-    <div class="col-span-3">lista</div>
+    <div class="col-span-3 gap-4 grid">
 
-    <?php if (auth()): ?>
+        <?php foreach($avaliacoes as $avaliacao): ?>
 
-        <div>
-        
+            <div class="border border-stone-700 rounded">
+
+                <?= $avaliacao->avaliacao ?>
+
+                <?php
+                                    
+                    $nota = str_repeat('⭐', $avaliacao->nota)
+                    
+                ?>
+
+                <?= $nota ?>
+
+            </div>
+
+        <?php endforeach; ?>
+
+    </div>
+
+    <div>
+
+        <?php if (auth()): ?>
+            
             <div class="border border-stone-700 rounded">
 
                 <h1 class="border-b border-stone-700 text-stone-400 font-bold px-4 py-2">Me conte o que achou!</h1>
@@ -85,9 +119,8 @@
                 </form>
 
             </div>
-
-        </div>
-
-    <?php endif; ?>
+        <?php endif; ?>
+        
+    </div>
 
 </div>
