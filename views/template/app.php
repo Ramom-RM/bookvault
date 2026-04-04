@@ -25,9 +25,9 @@
 
             <ul>
 
-                <?php if (isset($_SESSION['auth'])): ?>
+                <?php if (auth()): ?>
 
-                    <li><a href="/logout">Oi, <?= $_SESSION['auth']->nome ?></a></li>
+                    <li><a href="/logout">Oi, <?= auth()->nome ?></a></li>
 
                 <?php else: ?>
 
@@ -41,20 +41,19 @@
 
     </header>
 
-
     <main class="mx-auto max-w-screen-lg space-y-6">
 
-        <?php if($mensagem = flash()->get('mensagem')): ?>
+        <?php if ($mensagem = flash()->get('mensagem')): ?>
 
             <div class="border-green-800 bg-green-900 text-green-400 px-4 py-1 rounded-md border-2 text-sm font-bold">
 
                 <?= $mensagem ?>
 
-        </div>
+            </div>
 
-    <?php endif; ?>
+        <?php endif; ?>
 
-    <?php require "views/{$view}.view.php" ?>
+        <?php require "views/{$view}.view.php" ?>
 
     </main>
 
