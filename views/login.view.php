@@ -12,8 +12,6 @@
 
                     <ul>
 
-                        <li>Deu ruim!!</li>
-
                         <?php foreach ($validacoes as $validacao): ?>
 
                             <li><?= $validacao ?></li>
@@ -59,8 +57,6 @@
                 <div class="border-red-800 bg-red-900 text-red-400 px-4 py-1 rounded-md border-2 text-sm font-bold">
 
                     <ul>
-
-                        <li>Deu ruim!!</li>
 
                         <?php foreach ($validacoes as $validacao): ?>
 
