@@ -1,0 +1,1 @@
+<h1 class="text-lg font-bold mt-2">Usuário não autenticado!</h1>
