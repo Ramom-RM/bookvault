@@ -8,7 +8,7 @@ function view($view, $data = []) {
 
     }
 
-    require 'views/template/app.php';
+    require __DIR__ . '/../Views/template/app.php';
 
 }
 
@@ -48,7 +48,7 @@ function flash() {
 
 function config($chave = null) {
 
-    $config = require 'config.php';
+    $config = require __DIR__ . '/../../config/config.php';
 
     if (strlen($chave) > 0) {
 

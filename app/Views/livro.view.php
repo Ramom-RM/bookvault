@@ -1,4 +1,4 @@
-<?php require_once 'partials/_livro.php'; ?>
+<?php require_once __DIR__ . '/partials/_livro.php'; ?>
 
 <h2>Avaliações</h2>
 

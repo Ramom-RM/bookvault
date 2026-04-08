@@ -58,7 +58,7 @@
 
         <?php endif; ?>
 
-        <?php require "../views/{$view}.view.php" ?>
+        <?php require __DIR__ . "/../{$view}.view.php" ?>
 
     </main>
 

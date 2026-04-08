@@ -46,4 +46,5 @@ class Database {
 
 }
 
+$config = require __DIR__ . '/../../config/config.php';
 $database = new Database($config['database']);

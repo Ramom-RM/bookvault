@@ -20,7 +20,7 @@
         
         foreach($livros as $livro) {
 
-            require 'partials/_livro.php';
+            require __DIR__ . '/partials/_livro.php';
 
         } 
     
