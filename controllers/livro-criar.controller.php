@@ -47,7 +47,7 @@ $extensao = pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION);
 
 $imagem = "images/$novoNome.$extensao";
 
-move_uploaded_file($_FILES['imagem']['tmp_name'], $imagem);
+move_uploaded_file($_FILES['imagem']['tmp_name'], __DIR__ .  "/../public/$imagem");
 
 $database->query(
     "insert into livros (titulo, autor, descricao, ano_de_lancamento, usuario_id, imagem)
