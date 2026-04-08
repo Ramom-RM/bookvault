@@ -1,10 +1,14 @@
 <div class="p-2 rounded border-stone-800 border-2 bg-stone-900">
 
-    <div class="flex">
+    <div class="flex gap-2">
 
-        <div class="w-1/3">Imagem</div>
+        <div class="w-1/3">
 
-        <div class="space-y-1">
+            <img src="<?= $livro->imagem ?>" alt="Imagem do Livro" class="w-60 rounded">
+
+        </div>
+
+        <div class=" flex flex-col gap-1">
 
             <a href="/livro?id=<?= $livro->id ?>" class="font-semibold hover:underline"><?= $livro->titulo ?></a>
             <div class="text-xs italic"><?= $livro->autor ?></div>

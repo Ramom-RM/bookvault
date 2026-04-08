@@ -1,8 +1,7 @@
 <?php
 
-class usuario
+class Usuario {
 
-{
     public $id;
 
     public $nome;
@@ -10,4 +9,5 @@ class usuario
     public $email;
 
     public $senha;
+
 }

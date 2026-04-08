@@ -17,6 +17,8 @@ class Livro {
 
     public $ano_de_lancamento;
 
+    public $imagem;
+
     public $usuario_id;
 
     public $nota_avaliacao;
@@ -39,6 +41,7 @@ class Livro {
                     l.autor,
                     l.descricao,
                     l.ano_de_lancamento,
+                    l.imagem,
                     round(sum(a.nota) / 5.0) as nota_avaliacao,
                     count(a.id) as count_avaliacoes
         
@@ -56,7 +59,8 @@ class Livro {
                     l.titulo,
                     l.autor,
                     l.descricao,
-                    l.ano_de_lancamento;
+                    l.ano_de_lancamento,
+                    l.imagem;
         
             ",
         
