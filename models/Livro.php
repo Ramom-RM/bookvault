@@ -19,4 +19,8 @@ class Livro {
 
     public $usuario_id;
 
+    public $nota_avaliacao;
+
+    public $count_avaliacoes;
+
 }
