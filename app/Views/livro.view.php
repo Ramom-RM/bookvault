@@ -1,92 +1,100 @@
-<?php require_once __DIR__ . '/partials/_livro.php'; ?>
+<section class="bv-section">
+    <div class="bv-book-detail-header">
+        <div class="bv-book-detail-cover">
+            <img src="<?= htmlspecialchars($livro->imagem) ?>" alt="Capa de <?= htmlspecialchars($livro->titulo) ?>" class="bv-detail-cover-img">
+        </div>
 
-<h2>Avaliações</h2>
-
-<div class="grid grid-cols-4 gap-4">
-
-    <div class="col-span-3 gap-4 grid">
-
-        <?php foreach($avaliacoes as $avaliacao): ?>
-
-            <div class="border border-stone-700 rounded">
-
-                <?= $avaliacao->avaliacao ?>
-
-                <?php
-                                    
-                    $nota = str_repeat('⭐', $avaliacao->nota)
-                    
-                ?>
-
-                <?= $nota ?>
-
+        <div class="bv-book-detail-info">
+            <p class="bv-page-badge">Detalhes do livro</p>
+            <h1 class="bv-page-title"><?= htmlspecialchars($livro->titulo) ?></h1>
+            <p class="bv-book-author-large"><?= htmlspecialchars($livro->autor) ?> · <?= htmlspecialchars($livro->ano_de_lancamento) ?></p>
+            
+            <div class="bv-book-rating">
+                <div class="bv-rating-stars">
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <span class="bv-star <?= $i <= round($livro->nota_avaliacao ?? 0) ? 'bv-star-filled' : 'bv-star-empty' ?>">★</span>
+                    <?php endfor; ?>
+                </div>
+                <div class="bv-rating-text"><?= round($livro->nota_avaliacao ?? 0, 1) ?>/5.0 (<?= intval($livro->count_avaliacoes) ?> avaliações)</div>
             </div>
 
-        <?php endforeach; ?>
+            <p class="bv-book-description-large"><?= htmlspecialchars($livro->descricao) ?></p>
+            
+            <a href="/" class="bv-button">← Voltar à estante</a>
+        </div>
+    </div>
+</section>
 
+<section class="bv-section">
+    <div class="bv-reviews-header">
+        <div>
+            <p class="bv-page-badge">Avaliações</p>
+            <h2 class="bv-page-title">O que os leitores dizem</h2>
+            <p class="bv-page-description">Leia as avaliações de quem já leu este livro.</p>
+        </div>
     </div>
 
-    <div>
+    <div class="bv-reviews-layout">
+        <div class="bv-reviews-list">
+            <?php if (! count($avaliacoes)): ?>
+                <div class="bv-empty-state">Nenhuma avaliação ainda. Seja o primeiro a avaliar este livro!</div>
+            <?php else: ?>
+                <div class="bv-reviews-grid">
+                    <?php foreach($avaliacoes as $avaliacao): ?>
+                        <?php require __DIR__ . '/partials/_avaliacao.php'; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
 
         <?php if (auth()): ?>
-            
-            <div class="border border-stone-700 rounded">
-
-                <h1 class="border-b border-stone-700 text-stone-400 font-bold px-4 py-2">Me conte o que achou!</h1>
-
-                <form class="p-4 space-y-4" method="POST" action="/avaliacao-criar">
+            <div class="bv-review-form">
+                <div class="bv-card">
+                    <div class="bv-card-header">
+                        <h3>Me conte o que achou!</h3>
+                        <p class="bv-card-subtitle">Compartilhe sua avaliação deste livro.</p>
+                    </div>
 
                     <?php if ($validacoes = flash()->get('validacoes')): ?>
-
-                        <div class="border-red-800 bg-red-900 text-red-400 px-4 py-1 rounded-md border-2 text-sm font-bold">
-
-                            <ul>
-
+                        <div class="bv-alert" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;">
+                            <ul style="margin: 0; padding-left: 1.2rem;">
                                 <?php foreach ($validacoes as $validacao): ?>
-
-                                    <li><?= $validacao ?></li>
-
+                                    <li><?= htmlspecialchars($validacao) ?></li>
                                 <?php endforeach; ?>
-
                             </ul>
-
                         </div>
-
                     <?php endif; ?>
 
-                    <div class="flex flex-col">
-
+                    <form class="bv-review-form-body" method="POST" action="/avaliacao-criar">
                         <input name="livro_id" value="<?= $livro->id ?>" type="hidden">
 
-                        <label class="text-stone-400 mb-1">Avaliação</label>
+                        <div class="bv-form-group bv-form-group-full">
+                            <label class="bv-form-label" for="nota">Sua nota</label>
+                            <div class="bv-star-input">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <label class="bv-star-label">
+                                        <input type="radio" name="nota" value="<?= $i ?>" <?= $i === 5 ? 'checked' : '' ?>>
+                                        <span class="bv-star-value">★</span>
+                                    </label>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
 
-                        <textarea name="avaliacao" class="border-stone-800 border-2 rounded-md bg-stone-900 text-sm focus:outline-none px-2 py-1 w-full"></textarea>
+                        <div class="bv-form-group bv-form-group-full">
+                            <label class="bv-form-label" for="avaliacao">Seu comentário</label>
+                            <textarea id="avaliacao" name="avaliacao" class="bv-textarea" placeholder="Compartilhe seus pensamentos sobre este livro..."></textarea>
+                        </div>
 
-                    </div>
-
-                    <div class="flex flex-col">
-
-                        <label class="text-stone-400 mb-1">Nota</label>
-
-                        <select name="nota" class="border-stone-800 border-2 rounded-md bg-stone-900 text-sm focus:outline-none px-2 py-1 w-full">
-
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5" selected>5</option>
-
-                        </select>
-
-                    </div>
-
-                    <button type="submit" class="border-stone-800 bg-stone-900 text-stone-400 px-4 py-1 rounded-md border-2 hover:bg-stone-700">Salvar</button>
-
-                </form>
-
+                        <button type="submit" class="bv-button-primary">Publicar avaliação</button>
+                    </form>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="bv-review-form">
+                <div class="bv-card bv-empty-form">
+                    <p class="bv-empty-form-text"><a href="/login" class="bv-link">Faça login</a> para avaliar este livro.</p>
+                </div>
             </div>
         <?php endif; ?>
-        
     </div>
-
-</div>
+</section>

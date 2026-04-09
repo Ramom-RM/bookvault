@@ -4,63 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Book Wise</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>BookVault</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body class="bg-stone-950 text-stone-200">
+<body>
     
-    <header class="bg-stone-900">
+    <?php require __DIR__ . '/../../../includes/header.php'; ?>
 
-        <nav class="mx-auto max-w-screen-lg flex justify-between py-4">
+    <div class="bv-page-body">
+        <?php require __DIR__ . '/../../../includes/sidebar.php'; ?>
 
-            <div class="font-bold text-xl tracking-wide">Book Wise</div>
+        <div class="bv-content">
+            <?php if ($mensagem = flash()->get('mensagem')): ?>
+                <div class="bv-alert">
+                    <?= $mensagem ?>
+                </div>
+            <?php endif; ?>
 
-            <ul class="flex space-x-4 font-bold">
+            <?php require __DIR__ . "/../{$view}.view.php" ?>
+        </div>
+    </div>
 
-                <li><a href="/" class="text-lime-500">Explorar</a></li>
-
-                <?php if (auth()): ?>
-
-                    <li><a href="/meus-livros" class="hover:underline">Meus Livros</a></li>
-
-                <?php endif; ?>
-
-            </ul>
-
-            <ul>
-
-                <?php if (auth()): ?>
-
-                    <li><a href="/logout">Oi, <?= auth()->nome ?></a></li>
-
-                <?php else: ?>
-
-                    <li><a href="/login">Fazer Login</a></li>
-
-                <?php endif; ?>
-
-            </ul>
-
-        </nav>
-
-    </header>
-
-    <main class="mx-auto max-w-screen-lg space-y-6">
-
-        <?php if ($mensagem = flash()->get('mensagem')): ?>
-
-            <div class="border-green-800 bg-green-900 text-green-400 px-4 py-1 rounded-md border-2 text-sm font-bold">
-
-                <?= $mensagem ?>
-
-            </div>
-
-        <?php endif; ?>
-
-        <?php require __DIR__ . "/../{$view}.view.php" ?>
-
-    </main>
+    <?php require __DIR__ . '/../../../includes/footer.php'; ?>
 
 </body>
 </html>
