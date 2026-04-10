@@ -42,7 +42,7 @@ class Livro {
                     l.descricao,
                     l.ano_de_lancamento,
                     l.imagem,
-                    round(sum(a.nota) / 5.0) as nota_avaliacao,
+                    round(coalesce(avg(a.nota), 0), 2) as nota_avaliacao,
                     count(a.id) as count_avaliacoes
         
                 from
