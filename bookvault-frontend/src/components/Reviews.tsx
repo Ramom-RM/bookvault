@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Star, ThumbsUp, MessageSquare, Filter } from 'lucide-react';
 import { useError } from '../contexts/useError';
+import LoadingSpinner from './LoadingSpinner';
+import Skeleton from './Skeleton';
 
 interface Review {
   id: number;
@@ -83,7 +85,14 @@ const Reviews: React.FC = () => {
   if (loading) {
     return (
       <div className="space-y-8 animate-in fade-in">
-        <p className="text-slate-400">Carregando avaliações...</p>
+        <div>
+          <h2 className="text-3xl font-display font-bold text-white mb-2">Avaliações da Comunidade</h2>
+          <p className="text-slate-400">Carregando avaliações...</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Skeleton count={4} variant="card" />
+        </div>
       </div>
     );
   }

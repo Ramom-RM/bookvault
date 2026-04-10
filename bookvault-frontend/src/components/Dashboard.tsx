@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Book, Star, Clock, Bookmark } from 'lucide-react';
 import { useError } from '../contexts/useError';
+import { useBooks } from '../contexts/useBooks';
+import LoadingSpinner from './LoadingSpinner';
+import Skeleton from './Skeleton';
 
 interface BookData {
   id: number;
@@ -75,7 +78,26 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="space-y-8 animate-in fade-in">
-        <p className="text-slate-400">Carregando dashboard...</p>
+        <div>
+          <h2 className="text-3xl font-display font-bold text-white mb-2">Dashboard</h2>
+          <p className="text-slate-400">Carregando suas estatísticas...</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Skeleton count={4} variant="card" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <div className="glass-card p-8 space-y-4">
+              <div className="h-6 bg-slate-800 rounded w-1/2 animate-pulse" />
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <Skeleton count={6} variant="book" />
+              </div>
+            </div>
+          </div>
+          <Skeleton count={1} variant="card" />
+        </div>
       </div>
     );
   }

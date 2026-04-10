@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, Grid, List, MoreVertical, Star } from 'lucide-react';
 import { useError } from '../contexts/useError';
+import { useBooks } from '../contexts/useBooks';
+import LoadingSpinner from './LoadingSpinner';
+import Skeleton from './Skeleton';
 
 interface Book {
   id: number;
@@ -17,7 +20,7 @@ interface BookListingProps {
 }
 
 const BookListing: React.FC<BookListingProps> = ({ onSelectBook }) => {
-  const [books, setBooks] = useState<Book[]>([]);
+  const { books: contextBooks, refreshBooks } = useBooks();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addError } = useError();
@@ -27,43 +30,32 @@ const BookListing: React.FC<BookListingProps> = ({ onSelectBook }) => {
       try {
         setLoading(true);
         setError(null);
-        
-        const response = await fetch('http://localhost:8000/api/livros', {
-          credentials: 'include'
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar livros: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result.success && Array.isArray(result.data)) {
-          const mappedBooks: Book[] = result.data.map((book: any) => ({
-            id: book.id,
-            title: book.titulo,
-            author: book.autor,
-            year: book.ano_de_lancamento,
-            rating: book.nota_avaliacao || 0,
-            category: 'Geral',
-            cover: book.imagem ? `http://localhost:8000/${book.imagem}` : `https://picsum.photos/seed/book${book.id}/300/450`
-          }));
-          setBooks(mappedBooks);
-        } else {
-          throw new Error('Formato de resposta inválido');
-        }
+        await refreshBooks();
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
         setError(errorMsg);
         addError(`Erro ao carregar livros: ${errorMsg}`, 'error');
-        setBooks([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBooks();
-  }, [addError]);
+    if (contextBooks.length === 0) {
+      fetchBooks();
+    } else {
+      setLoading(false);
+    }
+  }, [refreshBooks, addError, contextBooks.length]);
+
+  const books: Book[] = contextBooks.map((book: any) => ({
+    id: book.id,
+    title: book.titulo,
+    author: book.autor,
+    year: book.ano_de_lancamento,
+    rating: book.nota_avaliacao || 0,
+    category: 'Geral',
+    cover: book.imagem ? `http://localhost:8000/${book.imagem}` : `https://picsum.photos/seed/book${book.id}/300/450`
+  }));
 
   if (error) {
     return (
@@ -78,8 +70,15 @@ const BookListing: React.FC<BookListingProps> = ({ onSelectBook }) => {
   if (loading) {
     return (
       <div className="space-y-8 animate-in fade-in">
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-          <p className="text-slate-400 text-sm">Carregando livros...</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-3xl font-display font-bold text-white mb-2">Minha Estante</h2>
+            <p className="text-slate-400">Carregando seus livros...</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          <Skeleton count={12} variant="book" />
         </div>
       </div>
     );

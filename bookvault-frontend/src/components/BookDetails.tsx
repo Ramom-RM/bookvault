@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Clock, BookOpen, Share2, Heart, MessageSquare, ArrowLeft } from 'lucide-react';
 import { useError } from '../contexts/useError';
+import LoadingSpinner from './LoadingSpinner';
+import Skeleton from './Skeleton';
 
 interface Review {
   id: number;
@@ -198,7 +200,27 @@ const BookDetails: React.FC<BookDetailsProps> = ({ bookId = 1 }) => {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in">
-        <p className="text-slate-400">Carregando detalhes do livro...</p>
+        <button className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors group">
+          <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-bold uppercase tracking-widest">Voltar para Estante</span>
+        </button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-4 space-y-6">
+            <div className="rounded-3xl overflow-hidden shadow-2xl shadow-emerald-500/10 border border-slate-800 aspect-[2/3] bg-slate-800 animate-pulse" />
+            <div className="flex gap-4">
+              <Skeleton count={2} variant="card" />
+            </div>
+          </div>
+
+          <div className="lg:col-span-8 space-y-8">
+            <Skeleton count={3} variant="text" />
+            <div className="glass-card p-8 space-y-4">
+              <div className="h-6 bg-slate-800 rounded w-1/2 animate-pulse" />
+              <Skeleton count={3} variant="text" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

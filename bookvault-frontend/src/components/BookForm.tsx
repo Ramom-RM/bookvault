@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, X, Save, ArrowLeft } from 'lucide-react';
 import { useError } from '../contexts/useError';
+import LoadingSpinner from './LoadingSpinner';
 
 const BookForm: React.FC = () => {
   const [titulo, setTitulo] = useState('');
