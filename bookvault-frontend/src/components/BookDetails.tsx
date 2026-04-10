@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Clock, BookOpen, Share2, Heart, MessageSquare, ArrowLeft } from 'lucide-react';
+import { useError } from '../contexts/useError';
 
 interface Review {
   id: number;
@@ -25,13 +26,18 @@ interface User {
   email: string;
 }
 
-const BookDetails: React.FC = () => {
+interface BookDetailsProps {
+  bookId?: number;
+}
+
+const BookDetails: React.FC<BookDetailsProps> = ({ bookId = 1 }) => {
   const [book, setBook] = useState<BookData | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const { addError } = useError();
   
   // Estados do formulário de avaliação
   const [reviewRating, setReviewRating] = useState(5);
@@ -54,7 +60,7 @@ const BookDetails: React.FC = () => {
           setUser(null);
         }
       } catch (err) {
-        console.error('Erro ao verificar autenticação:', err);
+        addError('Erro ao verificar autenticação', 'warning');
         setUser(null);
       } finally {
         setCheckingAuth(false);
@@ -70,7 +76,7 @@ const BookDetails: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('http://localhost:8000/api/livro?id=1', {
+        const response = await fetch(`http://localhost:8000/api/livro?id=${bookId}`, {
           credentials: 'include'
         });
 
@@ -87,18 +93,20 @@ const BookDetails: React.FC = () => {
           throw new Error('Formato de resposta inválido');
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
+        setError(errorMsg);
+        addError(`Erro ao carregar livro: ${errorMsg}`, 'error');
       } finally {
         setLoading(false);
       }
     };
 
     fetchBookDetails();
-  }, []);
+  }, [bookId, addError]);
 
   const refreshBookData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/livro?id=1', {
+      const response = await fetch(`http://localhost:8000/api/livro?id=${bookId}`, {
         credentials: 'include'
       });
 
@@ -109,7 +117,7 @@ const BookDetails: React.FC = () => {
         setBook(result.data.livro);
       }
     } catch (err) {
-      console.error('Erro ao atualizar dados do livro:', err);
+      addError('Erro ao atualizar dados do livro', 'warning');
     }
   };
 
@@ -176,10 +184,12 @@ const BookDetails: React.FC = () => {
         });
       }
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
       setReviewMessage({ 
         type: 'error', 
-        text: err instanceof Error ? err.message : 'Erro desconhecido.' 
+        text: errorMsg
       });
+      addError(`Erro ao enviar avaliação: ${errorMsg}`, 'error');
     } finally {
       setSubmitting(false);
     }

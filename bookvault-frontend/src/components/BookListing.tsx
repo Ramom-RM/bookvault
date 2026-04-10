@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, Grid, List, MoreVertical, Star } from 'lucide-react';
+import { useError } from '../contexts/useError';
 
 interface Book {
   id: number;
@@ -11,10 +12,15 @@ interface Book {
   cover: string;
 }
 
-const BookListing: React.FC = () => {
+interface BookListingProps {
+  onSelectBook?: (bookId: number) => void;
+}
+
+const BookListing: React.FC<BookListingProps> = ({ onSelectBook }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { addError } = useError();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -47,7 +53,9 @@ const BookListing: React.FC = () => {
           throw new Error('Formato de resposta inválido');
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
+        setError(errorMsg);
+        addError(`Erro ao carregar livros: ${errorMsg}`, 'error');
         setBooks([]);
       } finally {
         setLoading(false);
@@ -55,7 +63,7 @@ const BookListing: React.FC = () => {
     };
 
     fetchBooks();
-  }, []);
+  }, [addError]);
 
   if (error) {
     return (
@@ -105,7 +113,7 @@ const BookListing: React.FC = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
         {books.map((book) => (
-          <div key={book.id} className="book-card group cursor-pointer">
+          <div key={book.id} className="book-card group cursor-pointer" onClick={() => onSelectBook?.(book.id)}>
             <div className="relative aspect-[2/3] overflow-hidden">
               <img 
                 src={book.cover} 
